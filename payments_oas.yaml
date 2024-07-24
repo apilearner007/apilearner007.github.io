@@ -1,0 +1,263 @@
+openapi: 3.0.3
+info: 
+  title: OAS for Payments API
+  version: 1.1.0
+  description: This documentation describes 4 endpoints namely /payments, /apiStatus, /payments/{transaction_id}, /signUp
+    You can use this documentation to send requests to the servers too. This is written using OAS.
+  termsOfService: https://www.bhimupi.org.in/terms-conditions
+  contact:
+    name: Akshay Hebbar
+    email: abc@gmail.com
+servers: 
+  - url: http://127.0.0.1:5000
+    description: Development server
+  - url: http://192.4.8.1:5000
+    description: Production server
+paths: 
+
+  /apiStatus:
+    get:
+      responses: 
+        '200':
+          description: Message to convey apiStatus endpoint is running
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  status: 
+                    type: integer
+                  date: 
+                    type: string
+              examples:
+                api-status-example:
+                  value:
+                    message: API is up!
+        '400':
+          description: Message to convey apiStatus endpoint is down
+          
+  /payments: 
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  minimum: 0
+                  maximum: 100000
+                payer_upi:
+                  type: string
+                payee_upi:
+                  type: string
+                note:
+                    type: string
+              additionalProperties: false
+              required:
+                - amount
+                - payer_upi
+                - payee_upi
+            examples:
+              txn_123:
+                value:
+                  "amount": 130
+                  "note": "Books"
+                  "payee_upi": "qwe-sbi"
+                  "payer_upi": "abx@okhdfc"
+              txn_456:
+                value:
+                  "amount": 300
+                  "note": "Ola"
+                  "payee_upi": "akshay@okicici"
+                  "payer_upi": "abx@okhdfc"
+              txn_789:
+                value:
+                  "amount": 500
+                  "note": "Rent"
+                  "payee_upi": "abc@okicici"
+                  "payer_upi": "xyz@okhdfc"
+      responses:
+        '201':
+          description: Payment transaction created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  amount:
+                    type: integer
+                  payer_upi:
+                    type: string
+                  payee_upi:
+                    type: string
+                  note:
+                    type: string
+                  status:
+                    type: string
+                  timestamp:
+                    type: string
+                  transaction_id:
+                    type: string
+              examples:
+                txn_123:
+                  value:
+                    "amount": 130
+                    "note": "Books"
+                    "payee_upi": "qwe-sbi"
+                    "payer_upi": "abx@okhdfc"
+                    "status": "initiated"
+                    "timestamp": "Tue, 23 Jul 2024 14:16:27 GMT"
+                    "transaction_id": "8040cb86-04a2-492b-9b0a-c1b3a450c509"
+                txn_456:
+                  value:
+                    "amount": 300
+                    "note": "Ola"
+                    "payee_upi": "akshay@okicici"
+                    "payer_upi": "abx@okhdfc"
+                    "status": "initiated"
+                    "timestamp": "Tue, 27 Jul 2024 12:45:27 GMT"
+                    "transaction_id": "a5560f7c-123c-46bc-a93f-9ca1ede78957"
+                txn_789:
+                  value:
+                    "amount": 500
+                    "note": "Rent"
+                    "payee_upi": "abc@okicici"
+                    "payer_upi": "xyz@okhdfc"
+                    "status": "initiated"
+                    "timestamp": "Tue, 31 Jul 2024 12:45:27 GMT"
+                    "transaction_id": "30bf4f62-69bd-427a-8974-f2881a061a2b"     
+  /payments/{transaction_id}: 
+    put:
+      description: Updating a trasaction by transaction id
+      parameters:
+        - name: transaction_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  amount:
+                    type: integer
+                    minimum: 0
+                    maximum: 100000
+                  payer_upi:
+                    type: string
+                  payee_upi:
+                    type: string
+                  note:
+                    type: string
+                additionalProperties: false
+                required:
+                - amount
+                - payer_upi
+                - payee_upi
+      responses:
+        '200':
+          description: Transaction updated successfully  
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  amount:
+                    type: integer
+                  payer_upi:
+                    type: string
+                  payee_upi:
+                    type: string
+                  note:
+                    type: string
+                  status:
+                    type: string
+                  timestamp:
+                    type: string
+                  transaction_id:
+                    type: string
+        '404':
+          description: Transaction not found
+  
+    get:
+      description: Fetching details for a trasaction by transaction id
+      parameters:
+        - name: transaction_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Transaction details fetched successfully  
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  amount:
+                    type: integer
+                  payer_upi:
+                    type: string
+                  payee_upi:
+                    type: string
+                  note:
+                    type: string
+                  status:
+                    type: string
+                  timestamp:
+                    type: string
+                  transaction_id:
+                    type: string
+              examples:
+                txn_123:
+                  value:
+                    "amount": 130
+                    "note": "Books"
+                    "payee_upi": "qwe-sbi"
+                    "payer_upi": "abx@okhdfc"
+                    "status": "initiated"
+                    "timestamp": "Tue, 23 Jul 2024 14:16:27 GMT"
+                    "transaction_id": "8040cb86-04a2-492b-9b0a-c1b3a450c509"
+                txn_456:
+                  value:
+                    "amount": 300
+                    "note": "Ola"
+                    "payee_upi": "akshay@okicici"
+                    "payer_upi": "abx@okhdfc"
+                    "status": "initiated"
+                    "timestamp": "Tue, 27 Jul 2024 12:45:27 GMT"
+                    "transaction_id": "a5560f7c-123c-46bc-a93f-9ca1ede78957"
+                txn_789:
+                  value:
+                    "amount": 500
+                    "note": "Rent"
+                    "payee_upi": "abc@okicici"
+                    "payer_upi": "xyz@okhdfc"
+                    "status": "initiated"
+                    "timestamp": "Tue, 31 Jul 2024 12:45:27 GMT"
+                    "transaction_id": "30bf4f62-69bd-427a-8974-f2881a061a2b"
+        '404':
+          description: Transaction not found
+          
+    delete:
+      description: Deleting a trasaction by transaction id
+      parameters:
+        - name: transaction_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Transaction details deleted successfully  
+  
+  /signUp: {}
